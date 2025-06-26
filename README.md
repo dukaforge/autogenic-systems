@@ -1,2 +1,2 @@
 # cgd
-Musings by C.G. Djinovic
+Musings by C.G. Djinovic.
