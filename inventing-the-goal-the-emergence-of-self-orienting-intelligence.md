@@ -1,6 +1,6 @@
 # Inventing the Goal: The Emergence of Self-Orienting Intelligence  
-*by C.G. Djinovic*
-*June 25, 2025*
+**by C.G. Djinovic**
+**June 25, 2025**
 
 ## Executive Summary
 
