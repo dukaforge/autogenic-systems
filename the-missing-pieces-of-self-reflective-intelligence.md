@@ -1,7 +1,7 @@
 # The Missing Pieces of Self-Reflective Intelligence
 
-**Author**: C.G. Djinovic  
-**Date**: June 25, 2025  
+**C.G. Djinovic**
+**June 25, 2025**  
 
 ---
 
