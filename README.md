@@ -1,2 +1,2 @@
 # cgd
-Musings by C.G. Djinovic.
+Random String by C.G. Djinovic.
