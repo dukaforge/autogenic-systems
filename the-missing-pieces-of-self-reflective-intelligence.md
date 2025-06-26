@@ -1,6 +1,6 @@
 # The Missing Pieces of Self-Reflective Intelligence
 
-**C.G. Djinovic**
+**by C.G. Djinovic**
 **June 25, 2025**  
 
 ---
