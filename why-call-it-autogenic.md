@@ -1,4 +1,6 @@
 # Why Call It *Autogenic*?
+**by C.G. Djinovic**
+**June 26, 2025**
 
 As engineered systems evolve toward open-ended intelligence, new terminology is required to distinguish those that not only act independently but **generate their own goals, logic, and internal structure**. The term **autogenic** is used to describe this next tier of system autonomy. It captures a distinct class of systems that are **self-originating**, not just self-operating. This section explains the rationale for the term, its etymological grounding, its relation to other concepts in science and engineering, and its advantages over alternative names.
 
