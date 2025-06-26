@@ -4,7 +4,35 @@
 **June 25, 2025**  
 
 ---
+## Executive Summary
 
+This paper examines a critical gap in the architecture of autonomous systems: the absence of self-reflection. While modern AI systems can learn, adapt, and optimize, few can assess the adequacy of their own reasoning or revise their decision-making logic. This missing capability limits autonomy, constrains safety, and blocks the path to recursive self-improvement.
+
+### Key Points
+
+- **Self-reflection** is defined as a meta-level capability: the ability of a system to monitor, evaluate, and revise its own reasoning mechanisms.
+
+- It is distinct from self-monitoring or self-assessment and is **structurally required** for systems to reprogram themselves, reframe goals, or evolve their architecture.
+
+- The paper introduces **autogenic systems**, which go beyond adaptation to support goal invention, behavior synthesis, and structural self-improvement. Self-reflection is the mechanism that enables this transition.
+
+- Current AI systems exhibit **partial capabilities** (e.g., retry loops in LLMs, reflective agents, self-modeling robots), but lack autonomous reflection triggering, generative meta-functions, and persistent reflective memory.
+
+- Without self-reflection, recursive self-improvement (RSI) remains speculative. With it, systems gain the ability to decide *when* and *how* to change themselves—safely and meaningfully.
+
+### Contributions
+
+- A functional definition and decomposition of self-reflection  
+- A survey of partial implementations in LLMs, robotics, cognitive architectures, and smart manufacturing  
+- A structured analysis of what has been achieved and what remains missing  
+- A set of open research questions spanning architecture, safety, and meta-reasoning
+
+### Conclusion
+
+Self-reflection is not a fringe feature—it is the core mechanism that enables intelligent systems to recognize and respond to their own limitations. Until we can build systems that reflect autonomously and improve their own cognition, autonomy will remain bounded by static logic and external control.
+
+This paper lays out the missing pieces and offers a roadmap to building truly reflective, autogenic intelligence.
+---
 ## Table of Contents
 
 1. [Introduction](#1-introduction)  
