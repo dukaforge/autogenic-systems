@@ -112,6 +112,81 @@ The architecture distinguishes between two fundamental agent types based on comp
 
 This design principle grounds the system’s agent fabric in simplicity while allowing sophisticated autonomous behavior to emerge through composition.
 
+## 2.9 Agent Lifecycle
+
+The agent lifecycle defines the stages through which an agent progresses—from its initial conception to retirement—within the autogenic system. Understanding and managing this lifecycle is critical for sustaining long-term autonomy, adaptability, and evolution.
+
+---
+
+### Lifecycle Stages
+
+1. **Conception**  
+   - The agent’s goal, role, or function is identified or invented, either through external intent or internal recursive generation.
+
+2. **Design**  
+   - Agent structure, behavior, and policies are specified. This may involve generating blueprints, code, or parameterized templates by factory agents.
+
+3. **Simulation (Digital Twin Evaluation)**  
+   - The agent’s behavior and interaction plans are evaluated in a simulated environment composed of agent-based digital twins to ensure safety and effectiveness before deployment.
+
+4. **Selection / Promotion**  
+   - Among candidate agents, those that perform best in simulation or meet predefined criteria are selected for deployment.
+
+5. **Deployment**  
+   - The agent is instantiated within the live system, allocated resources, and integrated with discovery and communication subsystems.
+
+6. **Operation**  
+   - The agent performs its designated tasks, interacts with other agents and the external system, and collects runtime data.
+
+7. **Reflection / Evaluation**  
+   - Critic or meta-control agents assess the agent’s performance, goal alignment, and system impact, identifying needs for adaptation or replacement.
+
+8. **Adaptation / Evolution**  
+   - Based on evaluations, the agent may self-modify, update policies, or be replaced by newly generated agents from the agent factory.
+
+9. **Retirement**  
+   - Agents that are obsolete, faulty, or replaced are gracefully decommissioned, and their operational data is archived.
+
+10. **Legacy Integration**  
+    - Archived agent data, models, and experiences are retained in the knowledge base, providing a foundation for future agent generation and system learning.
+
+---
+
+### Key Features of the Lifecycle
+
+- The lifecycle supports **recursive and autonomous evolution**; agents can be created and retired without human intervention.  
+- **Digital twin evaluation** acts as a safety and quality gate before real-world impact.  
+- Lifecycle stages are managed by distinct agent clusters specialized for conception, design, evaluation, and governance.  
+- The system maintains **continuity of knowledge and experience** through legacy integration, enabling ongoing improvement.
+
+---
+
+Understanding and implementing this lifecycle is foundational for building robust, scalable autogenic systems capable of sustained autonomy and self-improvement.
+
+### 1. Simple Agents
+- Represented by **procedural agents**  
+- Exhibit fixed, rule-based, or scripted behaviors  
+- Typically stateless or maintain minimal state  
+- Responsible for basic system functions such as sensing, actuation, and straightforward control tasks  
+- Serve as the foundational building blocks of the system
+
+### 2. Composite Agents
+- Encompass **learning agents** and **recursive agents**  
+- Constructed by composing multiple simple and/or composite agents  
+- Possess adaptive, reflective, or generative capabilities  
+- Capable of evolving internal logic, generating new agents, and inventing goals  
+- Provide higher-order functionality through hierarchical organization and collaboration among simpler agents
+
+---
+
+### Implications
+
+- Composite agents form **hierarchical structures** with nested layers of simpler agents  
+- System complexity grows **only as necessary**, preserving efficiency at the base layer  
+- Facilitates **clear modular separation of concerns**, enabling evolutionary design and runtime adaptability
+
+This design principle grounds the system’s agent fabric in simplicity while allowing sophisticated autonomous behavior to emerge through composition.
+
 ## 3. Agent Typology and Capability Boundaries
 
 The architecture enforces a strict classification of agents based on their autonomy, learning capacity, and reflective depth. This section defines the agent types used in the system and the functional boundaries that govern their deployment.
