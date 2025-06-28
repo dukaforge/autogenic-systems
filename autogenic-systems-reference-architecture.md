@@ -686,3 +686,42 @@ These comparisons illustrate how the Autogenic Architecture diverges from curren
 - **Generalizing cognition across all system functions**, not restricting it to a reasoning module
 
 This makes the autogenic model uniquely suited for systems that must operate with no external controller, plan their own behavior, and evolve autonomously over time.
+
+## Appendix D: Fallback Modes and Recursive Agent Impact in Autogenic Systems
+
+### Definition
+
+**Fallback modes** are operational states adopted when recursive agents are unavailable or disabled, limiting the system to procedural and learning agents. This ensures safe, predictable operation by gracefully degrading capabilities.
+
+---
+
+### Subsystem Capabilities: With vs. Without Recursive Agents (Fallback Profile)
+
+| Subsystem                     | With Recursive Agents                          | Without Recursive Agents (Fallback Mode)                   |
+|-------------------------------|-----------------------------------------------|------------------------------------------------------------|
+| **Intent and Goal Management** | Invents and adapts goals dynamically           | Can only interpret and decompose predefined goals           |
+| **Agent Lifecycle Management** | Self-reflective, adaptive lifecycle control    | Fixed lifecycle policies, no self-reflection                |
+| **Agent Factory**              | Dynamically generates and evolves agents       | Limited to static blueprint-based agent creation            |
+| **Digital Twin Simulation**    | Adaptive scenario invention and evaluation     | Simulation limited to predefined scenarios                   |
+| **Critic and Meta-Control**    | Deep system reflection and adaptive control    | Basic performance checks and reactive corrections only      |
+| **Monitoring and Observability** | Procedural monitoring (unchanged)             | Procedural monitoring (unchanged)                            |
+| **Knowledge and Experience Base** | Supports meta-learning and knowledge evolution | Stores and retrieves static or incremental data only         |
+| **Execution and Control**      | Adaptive execution with possible self-modification | Fixed or learning-based control, no self-programming        |
+| **Real-World Interface**       | Procedural interface (unchanged)                | Procedural interface (unchanged)                             |
+| **Platform Self-Management**   | Restructures and evolves platform runtime      | Limited to monitoring and parameter tuning                   |
+| **Discovery Subsystem**        | Evolves discovery strategies                    | Static registry and lookup                                   |
+| **Communication Policy Subsystem** | Adaptive, dynamic policy enforcement           | Static or manually updated policies                           |
+
+---
+
+### Implications
+
+- The fallback mode restricts the system to **autonomic and adaptive behaviors**, removing true recursive autonomy.
+- Critical reflective, inventive, and evolutionary capabilities become **offline or disabled**.
+- The system remains operational, safe, and controllable but **cannot innovate or self-restructure**.
+- Fallback mode serves as a **safety net**, enabling gradual or conditional escalation to full autogenic operation.
+
+---
+
+Would you like to include a state machine or flow diagram illustrating transitions between full autogenic and fallback modes?
+
