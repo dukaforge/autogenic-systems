@@ -84,6 +84,34 @@ Each subsystem is scoped to support one or more **self-X capabilities** (e.g., s
 
 Together, these principles produce a system that is **modular, evolvable, self-contained, and operationally recursive**—an autogenic system in the full sense of the term.
 
+## 2.8 Simple and Composite Agents
+
+The architecture distinguishes between two fundamental agent types based on complexity and composition, enabling modularity, scalability, and evolutionary growth.
+
+### 1. Simple Agents
+- Represented by **procedural agents**  
+- Exhibit fixed, rule-based, or scripted behaviors  
+- Typically stateless or maintain minimal state  
+- Responsible for basic system functions such as sensing, actuation, and straightforward control tasks  
+- Serve as the foundational building blocks of the system
+
+### 2. Composite Agents
+- Encompass **learning agents** and **recursive agents**  
+- Constructed by composing multiple simple and/or composite agents  
+- Possess adaptive, reflective, or generative capabilities  
+- Capable of evolving internal logic, generating new agents, and inventing goals  
+- Provide higher-order functionality through hierarchical organization and collaboration among simpler agents
+
+---
+
+### Implications
+
+- Composite agents form **hierarchical structures** with nested layers of simpler agents  
+- System complexity grows **only as necessary**, preserving efficiency at the base layer  
+- Facilitates **clear modular separation of concerns**, enabling evolutionary design and runtime adaptability
+
+This design principle grounds the system’s agent fabric in simplicity while allowing sophisticated autonomous behavior to emerge through composition.
+
 ## 3. Agent Typology and Capability Boundaries
 
 The architecture enforces a strict classification of agents based on their autonomy, learning capacity, and reflective depth. This section defines the agent types used in the system and the functional boundaries that govern their deployment.
