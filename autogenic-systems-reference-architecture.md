@@ -189,6 +189,37 @@ An autogenic system must begin its existence with a minimal set of **foundationa
 - **Minimal Agent Factory Agents**  
   Provide basic capabilities to generate new procedural or learning agents.
 
+## Minimum Viable Agent Set for System Initialization
+
+To enable autonomous operation from the moment of deployment, the autogenic system is shipped with a **minimum viable set of agents** focused on autonomic management of the underlying substrate.
+
+---
+
+### 2.11 Characteristics of the Minimum Viable Agent Set
+
+- Comprised primarily of **procedural agents**, ensuring **predictable, rule-based control** over the platform runtime.
+- Provides foundational autonomic capabilities such as:
+  - Resource monitoring and health checking
+  - Basic lifecycle management (agent registration, failure detection, restarts)
+  - Communication policy enforcement
+  - Service discovery and runtime topology awareness
+- Designed to operate **without learning or recursive capabilities** initially, to maximize stability and safety.
+- Enables **self-management of the substrate** (execution environment, message bus, storage) autonomically, forming a solid base for gradual system evolution.
+
+---
+
+### Purpose and Benefits
+
+- **Predictable startup behavior** ensures the platform remains reliable and secure during initial phases.
+- Provides a **scaffold for more complex agent types** (learning and recursive) to be spawned and integrated safely.
+- Supports gradual transition from **autonomic to autogenic** operation as the system bootstraps higher-order capabilities.
+
+---
+
+### Summary
+
+Shipping the system with this minimal procedural agent core creates a stable, self-managing substrate that enables the full agent fabric to grow and evolve without external intervention or human configuration.
+
 ---
 
 ### Bootstrapping Process
