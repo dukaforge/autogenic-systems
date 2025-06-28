@@ -163,29 +163,53 @@ The agent lifecycle defines the stages through which an agent progresses—from 
 
 Understanding and implementing this lifecycle is foundational for building robust, scalable autogenic systems capable of sustained autonomy and self-improvement.
 
-### 1. Simple Agents
-- Represented by **procedural agents**  
-- Exhibit fixed, rule-based, or scripted behaviors  
-- Typically stateless or maintain minimal state  
-- Responsible for basic system functions such as sensing, actuation, and straightforward control tasks  
-- Serve as the foundational building blocks of the system
+## 2.10 System Bootstrapping with Basic Agents and Subsystems
 
-### 2. Composite Agents
-- Encompass **learning agents** and **recursive agents**  
-- Constructed by composing multiple simple and/or composite agents  
-- Possess adaptive, reflective, or generative capabilities  
-- Capable of evolving internal logic, generating new agents, and inventing goals  
-- Provide higher-order functionality through hierarchical organization and collaboration among simpler agents
+An autogenic system must begin its existence with a minimal set of **foundational agents and subsystems**—a bootstrap core that enables subsequent autonomous growth, self-management, and evolution.
 
 ---
 
-### Implications
+### Bootstrap Core Components
 
-- Composite agents form **hierarchical structures** with nested layers of simpler agents  
-- System complexity grows **only as necessary**, preserving efficiency at the base layer  
-- Facilitates **clear modular separation of concerns**, enabling evolutionary design and runtime adaptability
+- **Discovery Subsystem Agents**  
+  Enable initial service registration, presence detection, and agent lookup.
 
-This design principle grounds the system’s agent fabric in simplicity while allowing sophisticated autonomous behavior to emerge through composition.
+- **Communication Policy Agents**  
+  Enforce baseline communication permissions and trust boundaries.
+
+- **Execution and Control Agents**  
+  Provide basic operational functionality to interface with the external system.
+
+- **Monitoring and Observability Agents**  
+  Collect essential telemetry to inform early decision-making.
+
+- **Agent Lifecycle Management Agents**  
+  Oversee initial agent health, replacement, and retirement policies.
+
+- **Minimal Agent Factory Agents**  
+  Provide basic capabilities to generate new procedural or learning agents.
+
+---
+
+### Bootstrapping Process
+
+1. The system is instantiated with this minimal agent core, configured via declarative intents.
+
+2. These foundational agents establish the **communication fabric**, **discovery mechanisms**, and **runtime control** needed for growth.
+
+3. Using their respective capabilities, bootstrap agents generate additional agents and subsystems, progressively expanding the system’s autonomous capabilities.
+
+4. Recursive agents, once created, enable goal invention, policy evolution, and runtime reconfiguration—initiating true autogenic behavior.
+
+---
+
+### Importance of Minimal Bootstrap
+
+- Keeps initial system complexity manageable.  
+- Provides **safe operational envelope** for agent experimentation and evolution.  
+- Ensures the system is **self-sufficient** from inception, without external orchestration or human intervention.
+
+The bootstrap core serves as the **foundation for all future autonomy and evolution** within the system.
 
 ## 3. Agent Typology and Capability Boundaries
 
