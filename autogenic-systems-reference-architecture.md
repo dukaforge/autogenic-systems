@@ -33,7 +33,7 @@ B. Architectural Comparison with TMF IG1251 and ETSI ENI 051
 
 ---
 
-#  Executive Summary
+# Executive Summary
 
 This research note introduces a modular, minimalist architecture for **autogenic systems**—software systems capable of self-reflection, self-evolution, and goal invention. Designed for **system-of-systems environments**, the architecture enables interaction with other systems of varying autonomy levels (automated, autonomic, adaptive) while maintaining internal evolutionary capabilities.
 
@@ -662,7 +662,7 @@ The architecture supports recursive behavior in a single system, but may eventua
 
 This raises questions of collective self-programming, distributed self-reflection, and meta-level policy evolution—all promising directions for autogenic intelligence at scale.
 
-# 📎 Appendices
+# Appendices
 
 ---
 
@@ -688,12 +688,12 @@ This appendix captures the behavior of each subsystem when recursive agents are 
 |-----------------------------------------|------------------------|----------------------|-------------------------------------------|
 | Intent Interpretation                   | Intent Handler         | Policy Input         | Recursive Planning & Peering              |
 | Closed-Loop Automation                  | Domain/Service Loops   | Analysis + Decision  | Monitoring → Analysis → Planning → Control|
-| Goal Invention                          | ❌                     | ❌                   | ✔️ Planning + Recursive Agents             |
-| Agent-Based Implementation              | ❌                     | Partial (AI Modules) | ✔️ Fully agent-based, typed by capability |
-| Agent Factory / Self-Programming        | ❌                     | ❌                   | ✔️ Self-Management                         |
-| Digital Twin for Reasoning              | ❌                     | ❌                   | ✔️ Used in Planning & Reflection          |
-| Fallback Modes                          | ❌                     | ❌                   | ✔️ Explicit and Composable                |
-| Self-Hosting                            | ❌                     | ❌                   | ✔️ Recursive Self-Management              |
+| Goal Invention                          | No                     | No                   | ✔️ Planning + Recursive Agents             |
+| Agent-Based Implementation              | No                     | Partial (AI Modules) | ✔️ Fully agent-based, typed by capability |
+| Agent Factory / Self-Programming        | No                     | No                   | ✔️ Self-Management                         |
+| Digital Twin for Reasoning              | No                     | No                   | ✔️ Used in Planning & Reflection          |
+| Fallback Modes                          | No                     | No                   | ✔️ Explicit and Composable                |
+| Self-Hosting                            | No                     | No                   | ✔️ Recursive Self-Management              |
 
 ---
 ## Appendix C. Agent Types and Functionalities by Subsystem
@@ -747,4 +747,94 @@ Each subsystem consumes and/or produces specific types of metadata. This appendi
 | **Agent Factory**     | A structure capable of generating or instantiating agents dynamically           |
 | **Blueprint**         | A template for an agent, plan, or subsystem, used by Planning or Management     |
 | **Autogenic System**  | A system capable of recursive goal invention, self-programming, and self-evolution |
+
+## Appendix F. Self-X Capability Mapping by Subsystem
+
+This appendix maps each self-X capability to the subsystem(s) responsible for implementing or enabling it.
+
+| **Self-X Capability**   | **Primary Subsystem(s)**                                      |
+|--------------------------|---------------------------------------------------------------|
+| **Self-monitoring**      | Monitoring                                                    |
+| **Self-description**     | Monitoring, Analysis                                          |
+| **Self-assessment**      | Analysis                                                      |
+| **Self-learning**        | Analysis, Peering                                             |
+| **Self-knowledge**       | Analysis                                                      |
+| **Self-adaptation**      | Planning, Control, Self-Management                            |
+| **Self-configuration**   | Execution, Control                                            |
+| **Self-governance**      | Planning, Control                                             |
+| **Self-protection**      | Control                                                       |
+| **Self-healing**         | Planning, Control                                             |
+| **Self-reflection**      | Self-Management, Analysis                                     |
+| **Self-programming**     | Planning, Self-Management                                     |
+| **Self-evolving**        | Self-Management                                               |
+| **Self-hosting**         | Self-Management                                               |
+| **Self-preservation**    | Control, Self-Management, Execution                           |
+| **Self-orienting**       | Planning, Peering                                             |
+| **Self-organization**    | Peering, Planning                                             |
+
+> Each capability is implemented through agent behavior and metadata exchange across subsystems. Recursive agents are required for self-reflection, self-programming, self-evolving, and self-orienting.
+
+## Appendix G. Execution Environment and Platform Requirements
+
+The autogenic system operates within and depends on an execution environment that supports agent-based, service-oriented operation. This platform does not embody autonomy itself, but provides the substrate that enables agents to function, interact, and evolve.
+
+---
+
+### G.1 Minimum Platform Capabilities
+
+The platform must support:
+
+| **Capability**             | **Purpose**                                                             |
+|----------------------------|--------------------------------------------------------------------------|
+| **Service Execution Fabric** | Hosts agents as independent, composable services                        |
+| **Message Bus / Event Bus** | Enables asynchronous communication among agents                         |
+| **Persistent Storage**      | Stores agent state, telemetry, metadata, and evolving blueprints        |
+| **Scheduling / Lifecycle Mgmt** | Starts, stops, monitors, and restarts agents or agent clusters         |
+| **Observability Support**   | Provides hooks for logging, tracing, and telemetry collection            |
+| **Security and Isolation**  | Sandboxes agents, restricts access, and enforces identity boundaries     |
+| **Introspection Interfaces**| Allows agents to query their environment, dependencies, or capabilities  |
+
+---
+
+### G.2 Intent Interface Layer
+
+The system provides and consumes services via an **intent-based interface**:
+- External clients express desired outcomes (e.g., “optimize throughput”)
+- The system interprets, decomposes, and fulfills these intents through Planning and Control
+- The interface is semantic and declarative, not procedural
+
+---
+
+### G.3 Hosting the System Itself
+
+Two distinct environments may be required:
+- **Service Platform**: Hosts the Execution subsystem; may be embedded, distributed, or constrained
+- **Autogenic Platform**: Hosts MAPE subsystems (Monitoring, Analysis, Planning, Control), Self-Management, and Peering
+
+These may be co-resident in simple deployments, or distributed in more complex ones.
+
+---
+
+### G.4 Self-Hosting and Recursive Expansion
+
+Once recursive agents are instantiated, the system can reason about:
+- Migrating agents across substrates
+- Rewriting parts of its own control logic
+- Allocating or repurposing platform resources dynamically
+
+Thus, the environment is not static—it may be **interpreted, adapted, and restructured** over time by the autogenic system itself.
+
+---
+
+### G.5 Example Technologies
+
+| **Component**         | **Candidate Technologies**                                   |
+|------------------------|-------------------------------------------------------------|
+| Service Fabric         | Kubernetes, wasmCloud, Dapr, Erlang VM                       |
+| Message Bus            | NATS, gRPC, MQTT, Kafka                                      |
+| Agent Runtime          | Microservices, Actors, Serverless Functions, WebAssembly     |
+| Persistence            | etcd, PostgreSQL, S3, IPFS                                   |
+| Observability Stack    | OpenTelemetry, Prometheus, Loki, Jaeger                     |
+| Secure Sandboxing      | WASI, Firecracker, container runtimes                        |
+
 
