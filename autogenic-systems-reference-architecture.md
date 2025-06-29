@@ -1,727 +1,750 @@
-# Autogenic Systems Reference Architecture
+# Title
+
+**Autogenic Systems Reference Architecture**
+
+**by C.G. Djinovic**
+
+**June 29, 2025**
 
 ---
 
-## Table of Contents
+# Table of Contents
 
 1. Introduction  
-2. Design Principles  
-3. Agent Typology and Capability Boundaries  
-4. Subsystem Architecture and Functional Clustering  
-5. Communication, Discovery, and Trust Control  
-6. Platform Runtime and Self-Hosting Control  
-7. Comparative Positioning and Implications  
-8. Open Questions and Future Directions  
-9. Conclusion  
+2. Background and Context  
+3. Design Principles  
+4. Autogenic System Architecture  
+  4.1 Execution Subsystem  
+  4.2 Monitoring Subsystem  
+  4.3 Analysis Subsystem  
+  4.4 Planning Subsystem  
+  4.5 Control Subsystem  
+  4.6 Self-Management Subsystem  
+  4.7 Peering Subsystem  
+5. Agent Lifecycle and Bootstrapping  
+6. System-of-Systems Role and Interfaces  
+7. Comparison with Reference Architectures  
+8. Limitations and Fallback Modes  
+9. Future Work  
+
+**Appendices**  
+A. Fallback Modes and Recursive Agent Impact  
+B. Architectural Comparison with TMF IG1251 and ETSI ENI 051
 
 ---
 
-## Executive Summary
+#  Executive Summary
 
-This research note proposes a minimal and fully agentic architecture for autogenic systems—systems that manage both their environment and their own existence without human intervention. Unlike traditional autonomic or autonomous frameworks that retain external orchestrators, static policies, or human supervision, the architecture presented here is constructed exclusively from agents, each selected according to the lowest type required to fulfill its function: procedural, learning, or recursive.
+This research note introduces a modular, minimalist architecture for **autogenic systems**—software systems capable of self-reflection, self-evolution, and goal invention. Designed for **system-of-systems environments**, the architecture enables interaction with other systems of varying autonomy levels (automated, autonomic, adaptive) while maintaining internal evolutionary capabilities.
 
-Twelve functional subsystems are identified, each implemented as a dynamic cluster of agents. These subsystems enable self-configuration, self-healing, self-programming, and self-reflection—not only in relation to the system’s mission domain, but also with respect to its own runtime platform. The system includes an intent-driven substrate that can be controlled by agents declaratively, and a recursive self-management loop that allows the system to monitor and adapt the very platform on which it operates.
+The system is composed entirely of agents organized into seven functionally distinct subsystems: **Execution, Monitoring, Analysis, Planning, Control, Self-Management,** and **Peering**. Each subsystem is implemented using only the **lowest-level agents required**: procedural for fixed logic, learning for adaptation, and recursive for self-programming and reflective reasoning.
 
-By enforcing the principle of minimal agent typing and eliminating all non-agentic logic from control loops, this architecture establishes a novel lower bound on what is necessary to build a fully autogenic system. It formalizes the distinction between control and substrate, redefines the structure of system modularity, and offers a recursive blueprint for self-evolving infrastructures. The result is not just a design pattern, but a conceptual framework for the next generation of closed-loop intelligent systems.
+Recursive agents are limited to only those subsystems where they are essential, following a design principle of **constrained recursion**. A fallback architecture ensures graceful operation even in the absence of recursive agents, allowing deployment in resource-constrained or safety-critical environments.
+
+The architecture extends prior standards like **TM Forum IG1251** and **ETSI ENI 051** by introducing formal mechanisms for **agent factories**, **recursive reflection**, and **self-hosting control logic**. It is intended as both a theoretical model and a practical blueprint for implementing evolving, service-oriented, agent-based autonomous systems.
 
 ## 1. Introduction
 
-The aspiration to build systems that operate without human oversight has driven decades of research in autonomic computing, self-managing networks, and artificial intelligence. While many frameworks claim autonomy, they remain anchored to orchestration logic, manual configuration layers, and embedded assumptions about external governance. These systems may be adaptive, but they are not independent. They may be automatic, but they are not self-determined.
+As digital infrastructure becomes increasingly distributed, dynamic, and complex, the need for software systems that can manage, adapt, and evolve themselves has become critical. Traditional approaches to automation—rule-based scripts, static workflows, or reactive control loops—fail to meet the demands of environments where goals shift, contexts evolve, and systems must operate without constant human supervision.
 
-This note proposes a shift: an architecture for **autogenic systems**—systems that not only control an external domain, but also manage, adapt, and evolve their own infrastructure. Crucially, the architecture is implemented **entirely through agents**, with no privileged controllers, scripts, or orchestration planes. Each subsystem is realized using the **simplest possible type of agent** capable of fulfilling its function: procedural, learning, or recursive.
+This research note introduces a minimal and composable architectural framework for building **autogenic systems**: systems capable of self-reflection, self-programming, and self-evolution. These systems not only automate operational tasks, but also **invent new goals**, **generate new behavior**, and **restructure their own control logic** over time.
 
-The system described herein manages two systems simultaneously:
-- An **external mission system**—such as a network, robotic fleet, or software environment
-- The **platform runtime** it depends on for execution, communication, and persistence
+The model is based on a **service-oriented, agent-based architecture** in which all behavior is implemented by agents of three types:
+- **Procedural agents**, which execute fixed logic
+- **Learning agents**, which adapt to their environment
+- **Recursive agents**, which reflect, reason, and evolve the system itself
 
-Through recursive feedback loops, self-generated intent, and distributed agency, the autogenic system becomes **both operator and operating context**, controlling the world and the conditions of its own existence. This architecture represents a minimal, modular foundation for building systems that are **self-sufficient, self-reflective, and self-evolving**.
+These agents are organized into seven functional subsystems: **Execution**, **Monitoring**, **Analysis**, **Planning**, **Control**, **Self-Management**, and **Peering**. Each subsystem is implemented using only the **lowest-level agent types required** to support its functionality, following a strict design principle of minimality and modularity.
 
-## 1. Introduction
+This work differs from existing frameworks such as **TMF IG1251** and **ETSI ENI 051** by introducing formal structures for agent factories, recursive self-management, and the progressive bootstrapping of autonomy. It also proposes a clear fallback model in which the system can operate without recursive agents, ensuring safe deployment in constrained or high-assurance environments.
 
-The aspiration to build systems that operate without human oversight has driven decades of research in autonomic computing, self-managing networks, and artificial intelligence. While many frameworks claim autonomy, they remain anchored to orchestration logic, manual configuration layers, and embedded assumptions about external governance. These systems may be adaptive, but they are not independent. They may be automatic, but they are not self-determined.
+The goal of this research is to offer both a theoretical foundation and a practical blueprint for building self-managing systems that can evolve their behavior and architecture over time—systems that are not merely autonomic, but autogenic.
 
-This note proposes a shift: an architecture for **autogenic systems**—systems that not only control an external domain, but also manage, adapt, and evolve their own infrastructure. Crucially, the architecture is implemented **entirely through agents**, with no privileged controllers, scripts, or orchestration planes. Each subsystem is realized using the **simplest possible type of agent** capable of fulfilling its function: procedural, learning, or recursive.
+## 2. Background and Context
 
-The system described herein manages two systems simultaneously:
-- An **external mission system**—such as a network, robotic fleet, or software environment
-- The **platform runtime** it depends on for execution, communication, and persistence
+The concept of system autonomy has evolved through multiple generations of software design. Early systems were **automated**—capable of executing predefined rules. These were followed by **autonomic systems**, able to reconfigure themselves within bounded conditions. More recent designs incorporate **adaptive learning**, allowing systems to tune behavior in response to observed feedback. But truly **autogenic systems**, capable of inventing goals, restructuring logic, and evolving control architectures, remain rare and poorly formalized.
 
-Through recursive feedback loops, self-generated intent, and distributed agency, the autogenic system becomes **both operator and operating context**, controlling the world and the conditions of its own existence. This architecture represents a minimal, modular foundation for building systems that are **self-sufficient, self-reflective, and self-evolving**.
+### 2.1 Autonomy Levels
 
-## 2. Design Principles
+This research follows a progressive view of autonomy:
 
-The architecture proposed in this research note is guided by a strict set of design principles intended to ensure minimality, clarity, and recursive autonomy. These principles define both what the system includes and what it explicitly excludes.
+- **Automated**: Executes static procedures without feedback  
+- **Autonomic**: Detects and corrects deviations via preconfigured control logic  
+- **Adaptive**: Learns from experience and modifies parameters or behavior  
+- **Autogenic**: Reflects on its own structure, invents goals, and evolves its logic recursively
 
-### 2.1 Agent-Only Implementation
-All functionality in the system is implemented using **agents**. There are no privileged control layers, no orchestration engines, and no static configuration logic. Every subsystem is a dynamic cluster of agents.
+Autogenic systems are characterized not only by what they do, but by **how they change what they do**—including their ability to alter their goals, roles, and internal control strategies.
 
-### 2.2 Minimal Agent Typing
-Each subsystem is implemented using the **simplest type of agent necessary** to fulfill its function:
-- **Procedural agents**: rule-based, stateless, or fixed-behavior logic
-- **Learning agents**: adaptive agents that modify behavior through feedback
-- **Recursive agents**: agents capable of introspection, code generation, or reflective behavior
+### 2.2 Self-X Capabilities
 
-There are no **assisted agents**—human-tuned, semi-autonomous units—because no human is assumed to be in the loop.
+To describe internal capabilities, this work adopts and extends the widely used **Self-X** taxonomy. Key capabilities include:
 
-### 2.3 Dual Control: Self and World
-The system is responsible for two domains:
-- The **external system** it is designed to manage (e.g., infrastructure, environment, process)
-- The **platform runtime** it depends on (e.g., message bus, execution fabric, storage)
+- **Self-monitoring**, **self-analysis**, **self-healing** (from autonomic systems)  
+- **Self-learning**, **self-optimization**, **self-adaptation** (from adaptive systems)  
+- **Self-reflection**, **self-programming**, **self-evolving**, **self-orienting** (unique to autogenic systems)
 
-This dual control architecture introduces a **recursive self-hosting loop**, where agents can declare intent that modifies the very substrate they run on.
+Each capability is implemented by agents and mapped to specific architectural subsystems.
 
-### 2.4 Intent-Based Interfaces
-All interactions—between agents, between agents and the platform, and between agents and the real world—are mediated through **intent-based interfaces**. These are declarative, policy-driven structures that specify **what** should be achieved, not **how**.
+### 2.3 Agent Typology
 
-### 2.5 Functional Subsystem Clustering
-System functionality is organized into **named subsystems**, each composed of one or more agents working collaboratively. These subsystems are **not hardcoded modules**, but runtime clusters grouped by function.
+The system model relies on three agent types, defined by their cognitive and operational depth:
 
-### 2.6 No Orchestration, No Scripts
-There is no external orchestrator or imperative script layer. Control loops emerge from agent communication, shared memory, and intent declarations. All complexity emerges from the composition of simple agents—not from hand-coded plans.
+- **Procedural agents**: Follow fixed, non-adaptive logic  
+- **Learning agents**: Adjust behavior based on environment or experience  
+- **Recursive agents**: Reflect on other agents, invent new goals, and generate new logic
 
-### 2.7 Self-X Capability Scoping
-Each subsystem is scoped to support one or more **self-X capabilities** (e.g., self-configuration, self-programming, self-healing). These capabilities emerge from agent behavior, not from system-wide magic.
+These agents are composable and minimal: complex behaviors emerge by assembling them into structured subsystems.
 
-Together, these principles produce a system that is **modular, evolvable, self-contained, and operationally recursive**—an autogenic system in the full sense of the term.
+### 2.4 Standards Context
 
-## 2.8 Simple and Composite Agents
+The model builds on, but extends beyond, established industry frameworks:
+- **TM Forum IG1251/1252**: Provides a reference model for intent handling and service orchestration, but lacks structures for goal invention or agent generation.
+- **ETSI ENI 051**: Introduces closed-loop AI for network intelligence, but stops short of defining recursive agents or agent-based self-evolution.
+- **ITU-T FG-AN and Y.3000 Series**: Define high-level concepts for autonomous networks, without detailing mechanisms for agent-based evolution.
 
-The architecture distinguishes between two fundamental agent types based on complexity and composition, enabling modularity, scalability, and evolutionary growth.
+This research situates autogenic systems as the **next architectural leap**, integrating and extending the cognitive layers introduced by these standards.
 
-### 1. Simple Agents
-- Represented by **procedural agents**  
-- Exhibit fixed, rule-based, or scripted behaviors  
-- Typically stateless or maintain minimal state  
-- Responsible for basic system functions such as sensing, actuation, and straightforward control tasks  
-- Serve as the foundational building blocks of the system
+## 3. Design Principles
 
-### 2. Composite Agents
-- Encompass **learning agents** and **recursive agents**  
-- Constructed by composing multiple simple and/or composite agents  
-- Possess adaptive, reflective, or generative capabilities  
-- Capable of evolving internal logic, generating new agents, and inventing goals  
-- Provide higher-order functionality through hierarchical organization and collaboration among simpler agents
+The architecture of the autogenic system is driven by a commitment to minimality, composability, and autonomy. Its design reflects four core principles:
 
 ---
 
-### Implications
+### 3.1 Use the Simplest Agent That Works
 
-- Composite agents form **hierarchical structures** with nested layers of simpler agents  
-- System complexity grows **only as necessary**, preserving efficiency at the base layer  
-- Facilitates **clear modular separation of concerns**, enabling evolutionary design and runtime adaptability
+Each subsystem is implemented using only the **lowest-level agent type** required to fulfill its function:
+- **Procedural agents** for fixed, repeatable logic
+- **Learning agents** for adaptive behavior and tuning
+- **Recursive agents** only where invention, reflection, or structural evolution is required
 
-This design principle grounds the system’s agent fabric in simplicity while allowing sophisticated autonomous behavior to emerge through composition.
-
-## 2.9 Agent Lifecycle
-
-The agent lifecycle defines the stages through which an agent progresses—from its initial conception to retirement—within the autogenic system. Understanding and managing this lifecycle is critical for sustaining long-term autonomy, adaptability, and evolution.
+This constraint avoids unnecessary complexity and ensures that most of the system remains lightweight, explainable, and testable. Recursive agents are powerful but used sparingly.
 
 ---
 
-### Lifecycle Stages
+### 3.2 Subsystems Are Modular, Agent-Based, and Isolated
 
-1. **Conception**  
-   - The agent’s goal, role, or function is identified or invented, either through external intent or internal recursive generation.
+Each subsystem—Execution, Monitoring, Analysis, Planning, Control, Self-Management, and Peering—is implemented **entirely with agents**. These agents operate as services with well-defined responsibilities and communication paths. No subsystem requires access to internal logic or memory of another.
 
-2. **Design**  
-   - Agent structure, behavior, and policies are specified. This may involve generating blueprints, code, or parameterized templates by factory agents.
-
-3. **Simulation (Digital Twin Evaluation)**  
-   - The agent’s behavior and interaction plans are evaluated in a simulated environment composed of agent-based digital twins to ensure safety and effectiveness before deployment.
-
-4. **Selection / Promotion**  
-   - Among candidate agents, those that perform best in simulation or meet predefined criteria are selected for deployment.
-
-5. **Deployment**  
-   - The agent is instantiated within the live system, allocated resources, and integrated with discovery and communication subsystems.
-
-6. **Operation**  
-   - The agent performs its designated tasks, interacts with other agents and the external system, and collects runtime data.
-
-7. **Reflection / Evaluation**  
-   - Critic or meta-control agents assess the agent’s performance, goal alignment, and system impact, identifying needs for adaptation or replacement.
-
-8. **Adaptation / Evolution**  
-   - Based on evaluations, the agent may self-modify, update policies, or be replaced by newly generated agents from the agent factory.
-
-9. **Retirement**  
-   - Agents that are obsolete, faulty, or replaced are gracefully decommissioned, and their operational data is archived.
-
-10. **Legacy Integration**  
-    - Archived agent data, models, and experiences are retained in the knowledge base, providing a foundation for future agent generation and system learning.
+This ensures clear separation of concerns, easier upgrade paths, and support for distributed or federated deployment.
 
 ---
 
-### Key Features of the Lifecycle
+### 3.3 Bootstrapping Starts with Autonomic Behavior
 
-- The lifecycle supports **recursive and autonomous evolution**; agents can be created and retired without human intervention.  
-- **Digital twin evaluation** acts as a safety and quality gate before real-world impact.  
-- Lifecycle stages are managed by distinct agent clusters specialized for conception, design, evaluation, and governance.  
-- The system maintains **continuity of knowledge and experience** through legacy integration, enabling ongoing improvement.
+The system is initially shipped with a **minimum viable agent set**, composed of procedural agents and supporting runtime infrastructure. This allows the system to perform basic self-management and fulfill service obligations in a deterministic, testable way.
 
----
-
-Understanding and implementing this lifecycle is foundational for building robust, scalable autogenic systems capable of sustained autonomy and self-improvement.
-
-## 2.10 System Bootstrapping with Basic Agents and Subsystems
-
-An autogenic system must begin its existence with a minimal set of **foundational agents and subsystems**—a bootstrap core that enables subsequent autonomous growth, self-management, and evolution.
+The first **recursive agent** is either instantiated from a lightweight blueprint or synthesized dynamically via a recursive-capable engine (e.g., an embedded language model). This agent catalyzes the system’s capacity for self-evolution.
 
 ---
 
-### Bootstrap Core Components
+### 3.4 Fallback Is a First-Class Design Target
 
-- **Discovery Subsystem Agents**  
-  Enable initial service registration, presence detection, and agent lookup.
+The architecture is designed to operate in **fallback mode** if recursive agents are unavailable. In this mode:
+- Only procedural and learning agents are active
+- Goal invention and self-programming are disabled
+- The system maintains autonomic or adaptive behaviors
 
-- **Communication Policy Agents**  
-  Enforce baseline communication permissions and trust boundaries.
-
-- **Execution and Control Agents**  
-  Provide basic operational functionality to interface with the external system.
-
-- **Monitoring and Observability Agents**  
-  Collect essential telemetry to inform early decision-making.
-
-- **Agent Lifecycle Management Agents**  
-  Oversee initial agent health, replacement, and retirement policies.
-
-- **Minimal Agent Factory Agents**  
-  Provide basic capabilities to generate new procedural or learning agents.
-
-## Minimum Viable Agent Set for System Initialization
-
-To enable autonomous operation from the moment of deployment, the autogenic system is shipped with a **minimum viable set of agents** focused on autonomic management of the underlying substrate.
+This ensures resilience in safety-critical or resource-constrained environments and supports progressive onboarding of higher autonomy levels.
 
 ---
 
-### 2.11 Characteristics of the Minimum Viable Agent Set
+These principles reflect a commitment to **engineering for autonomy, not complexity**. The goal is not to maximize intelligence in every subsystem, but to ensure that intelligence emerges only where and when it is needed.
 
-- Comprised primarily of **procedural agents**, ensuring **predictable, rule-based control** over the platform runtime.
-- Provides foundational autonomic capabilities such as:
-  - Resource monitoring and health checking
-  - Basic lifecycle management (agent registration, failure detection, restarts)
-  - Communication policy enforcement
-  - Service discovery and runtime topology awareness
-- Designed to operate **without learning or recursive capabilities** initially, to maximize stability and safety.
-- Enables **self-management of the substrate** (execution environment, message bus, storage) autonomically, forming a solid base for gradual system evolution.
+## 4. Autogenic System Architecture
+
+The autogenic system is structured into seven modular subsystems, each implemented entirely through agents. Together, these subsystems enable a full loop of observation, reasoning, adaptation, execution, and structural evolution. This architecture is service-based, agent-driven, and capable of interacting with other systems of varying autonomy levels.
+
+Each subsystem plays a distinct role and is populated only with the simplest type of agent required to perform its function.
 
 ---
 
-### Purpose and Benefits
+### 4.1 Execution Subsystem
 
-- **Predictable startup behavior** ensures the platform remains reliable and secure during initial phases.
-- Provides a **scaffold for more complex agent types** (learning and recursive) to be spawned and integrated safely.
-- Supports gradual transition from **autonomic to autogenic** operation as the system bootstraps higher-order capabilities.
+**Role:**  
+The Execution subsystem provides the core service functionality of the system. It interfaces with the environment or client systems and is responsible for performing concrete tasks, such as sensing, actuation, data processing, or orchestrating service flows.
 
----
+**Agent Types:**  
+- **Procedural** (default)  
+- **Learning** (optional, for localized tuning)
 
-### Summary
+**Self-X Capabilities:**  
+- Self-configuration  
+- Self-preservation  
+- Partial self-adaptation (when learning agents are used)
 
-Shipping the system with this minimal procedural agent core creates a stable, self-managing substrate that enables the full agent fabric to grow and evolve without external intervention or human configuration.
+**Functionalities:**  
+- Run service-specific workflows or control loops  
+- Execute commands issued by the Control subsystem  
+- Maintain local service state and output events for monitoring  
+- Tune internal parameters (optional, via learning agents)  
+- Trigger fallbacks or retries when execution anomalies are detected
 
----
+**Example Behaviors:**  
+- A sensor agent sampling temperature at fixed intervals  
+- A message router forwarding data between queues  
+- A microcontroller task that adjusts motor speed based on PID feedback
 
-### Bootstrapping Process
-
-1. The system is instantiated with this minimal agent core, configured via declarative intents.
-
-2. These foundational agents establish the **communication fabric**, **discovery mechanisms**, and **runtime control** needed for growth.
-
-3. Using their respective capabilities, bootstrap agents generate additional agents and subsystems, progressively expanding the system’s autonomous capabilities.
-
-4. Recursive agents, once created, enable goal invention, policy evolution, and runtime reconfiguration—initiating true autogenic behavior.
-
----
-
-### Importance of Minimal Bootstrap
-
-- Keeps initial system complexity manageable.  
-- Provides **safe operational envelope** for agent experimentation and evolution.  
-- Ensures the system is **self-sufficient** from inception, without external orchestration or human intervention.
-
-The bootstrap core serves as the **foundation for all future autonomy and evolution** within the system.
-
-## 3. Agent Typology and Capability Boundaries
-
-The architecture enforces a strict classification of agents based on their autonomy, learning capacity, and reflective depth. This section defines the agent types used in the system and the functional boundaries that govern their deployment.
-
-### 3.1 Procedural Agents
-
-**Definition**: Agents with fixed, rule-based behavior. They do not learn, adapt, or reason beyond their programmed logic.
-
-**Usage**: Used for telemetry collection, simple control actions, static routing, and protocol translation.
-
-**Capabilities**:
-- Self-monitoring (via fixed thresholds or probes)
-- Self-description (reporting identity or state)
-- Stateless or event-driven behavior
-
-**Limitations**: Cannot adapt to new inputs, invent goals, or modify internal logic.
+The Execution subsystem is optimized for speed and stability. It does not plan, reflect, or learn beyond local adaptation. It is designed to operate reliably even in the absence of higher-level agents.
 
 ---
 
-### 3.2 Learning Agents
+### 4.2 Monitoring Subsystem
 
-**Definition**: Agents capable of improving their behavior over time through feedback, reinforcement, or statistical inference.
+**Role:**  
+The Monitoring subsystem continuously observes the behavior of the Execution subsystem and the platform on which it runs. It is responsible for collecting, tagging, and emitting telemetry data, including metrics, events, and logs.
 
-**Usage**: Used in lifecycle management, experience storage, simulation, and adaptive control.
+**Agent Types:**  
+- **Procedural**
 
-**Capabilities**:
-- Self-configuration (adjust behavior based on performance)
-- Self-optimization (refine actions via feedback)
-- Self-healing (learn from failure conditions)
-- Self-knowledge (build local models of task performance)
-
-**Boundaries**: Learning is scoped to a task or environment. These agents do not invent goals or alter their own architecture.
-
----
-
-### 3.3 Recursive Agents
-
-**Definition**: Agents capable of introspection, reflection, code generation, or metacognitive evaluation of other agents or the system.
-
-**Usage**: Used in critic subsystems, agent factories, and goal managers.
-
-**Capabilities**:
-- Self-programming (generate new agents or control logic)
-- Self-reflection (reason about system behavior or performance)
-- Self-orienting (invent or evaluate goals)
-- Self-evolving (restructure subsystems, adapt runtime configuration)
-
-**Boundaries**: Recursive agents are rare, high-complexity units. Their role is carefully scoped to limit runaway generation or destabilizing meta-loops.
-
----
-
-### 3.4 Agent Boundary Enforcement
-
-The architecture mandates that **no subsystem may escalate its agent type** beyond what is required. For example:
-- A monitoring subsystem must use procedural agents, not learning agents.
-- A control subsystem should use learning agents only if the environment is non-stationary.
-- Recursive agents must be used only when reflective or generative functions are essential.
-
-This constraint ensures **architectural clarity, safety, and explainability**, while minimizing unnecessary complexity or resource use.
-
----
-
-This agent taxonomy provides the foundation for subsystem implementation. In the next section, we map this classification onto the twelve functional subsystems of the autogenic architecture.
-## 4. Subsystem Architecture and Functional Clustering
-
-In this architecture, a **subsystem** is a cluster of collaborating agents grouped by functional responsibility. Each subsystem is composed entirely of agents, and no subsystem contains non-agentic logic. Agents within each cluster are typed (procedural, learning, or recursive) according to the minimal complexity required to fulfill their role.
-
-To support explainability, modularity, and reflective evolution, each subsystem is also aligned with a single **cognitive focus area**, such as execution, intent, or reflection. This one-to-one mapping ensures that responsibilities are clearly scoped and distributed across the system.
-
----
-
-### 4.1 Subsystem Overview
-
-| #  | Subsystem                        | Primary Role                                          | Agent Type(s)         | Cognitive Focus |
-|----|----------------------------------|--------------------------------------------------------|------------------------|------------------|
-| 1  | Execution and Control            | Executes plans and interacts with external systems     | Procedural / Learning  | Execution        |
-| 2  | Real-World Interface             | Binds internal agents to sensors and actuators         | Procedural             | Execution (nested) |
-| 3  | Monitoring and Observability     | Collects system and environmental telemetry            | Procedural             | Awareness        |
-| 4  | Discovery Subsystem              | Enables agent registration, lookup, and clustering     | Procedural / Learning  | Awareness (nested) |
-| 5  | Digital Twin Simulation          | Evaluates behavior in simulated environments           | Learning / Recursive   | Analysis         |
-| 6  | Critic and Meta-Control          | Evaluates agents and enforces behavioral alignment     | Recursive              | Decision         |
-| 7  | Communication Policy Subsystem   | Enforces communication permissions and trust zones     | Procedural / Learning  | Decision (nested) |
-| 8  | Intent and Goal Management       | Interprets, decomposes, or invents system goals        | Recursive              | Intent           |
-| 9  | Knowledge and Experience Base    | Stores models, histories, and structured experience     | Learning               | Experience       |
-|10  | Platform Self-Management         | Monitors and reconfigures the runtime environment       | Learning / Recursive   | Evolution        |
-|11  | Agent Factory                    | Synthesizes new agents, policies, or behaviors          | Recursive              | Invention        |
-|12  | Agent Lifecycle Management       | Oversees agent deployment, replacement, and retirement | Learning               | Reflection       |
-
----
-
-### 4.2 Subsystem Principles
-
-- Each subsystem is implemented **entirely by agents**
-- Each subsystem maps to **only one cognitive focus area**
-- Supporting or infrastructural roles (like discovery or communication control) are **nested** under their primary cognitive function
-- No subsystem has architectural privilege or orchestration control—**autonomy is distributed**
-
-This structure enables the system to maintain **bounded complexity**, perform distributed cognition, and evolve modularly over time.
-
-See **Appendix B** for a detailed breakdown of the subsystem-to-cognitive focus mapping.
-
-## 5. Communication, Discovery, and Trust Control
-
-A minimal autogenic system requires not only agent capabilities and subsystem boundaries, but also a robust mechanism for **governing how agents communicate**—with each other, with external systems, and with the platform itself. This section introduces two dedicated subsystems that together manage the communication fabric: the **Discovery Subsystem** and the **Communication Policy Subsystem**.
-
----
-
-### 5.1 Discovery Subsystem
-
-The Discovery Subsystem enables agents to **register**, **locate**, and **subscribe to** one another at runtime. Unlike a static service registry, discovery in this architecture is implemented by **agents** and adapts dynamically as agents are created, moved, or retired.
-
-**Key Functions**:
-- Registration of agent identity, role, and capabilities
-- Query and match agents by intent, type, or declared purpose
-- Subscription to availability or role-change events
-
-**Agent Types**:  
-- Procedural (for lookup, basic registration)  
-- Learning (for adaptive routing, semantic capability matching)
-
-**Enabled Self-X Capabilities**:
+**Self-X Capabilities:**  
+- Self-monitoring  
 - Self-description
-- Self-awareness
-- Self-organization
 
-This subsystem ensures that agent clusters remain **fluid, composable, and decentralized**, enabling the system to restructure itself at runtime.
+**Functionalities:**  
+- Collect system metrics (e.g., CPU, memory, throughput)  
+- Observe agent outputs and status indicators  
+- Emit telemetry data in standardized formats  
+- Register health, configuration, and version metadata  
+- Expose probe interfaces or respond to telemetry queries
+
+**Example Behaviors:**  
+- An agent that exports CPU utilization every 10 seconds  
+- A probe that checks for agent liveness via heartbeat messages  
+- A metric publisher that emits latency histograms to the Analysis subsystem
+
+The Monitoring subsystem is passive and lightweight. It performs no learning or adaptation. Its role is to **observe faithfully and describe clearly**, enabling other subsystems—especially Analysis—to reason about system behavior.
 
 ---
 
-### 5.2 Communication Policy Subsystem
+### 4.3 Analysis Subsystem
 
-While discovery enables connection, the Communication Policy Subsystem controls **who is allowed to talk to whom**. This includes:
-- Inter-agent communication
-- Access to external systems or APIs
-- Submission of intents to the platform runtime
+**Role:**  
+The Analysis subsystem interprets telemetry data from the Monitoring subsystem and converts it into insights, assessments, and hypotheses. It determines whether the system is meeting its goals, behaving anomalously, or exhibiting emerging trends.
 
-**Key Functions**:
-- Authorization and trust boundary enforcement
-- Intent-type filtering and scoping
-- Topology adaptation based on role, zone, or policy
-- Detection and mitigation of unintended or unsafe communication
+**Agent Types:**  
+- **Learning**
 
-**Agent Types**:  
-- Procedural (for rule enforcement)  
-- Learning (for adaptive policies or trust zone learning)
+**Self-X Capabilities:**  
+- Self-assessment  
+- Self-learning  
+- Self-description  
+- Self-knowledge  
+- Partial self-reflection (as an input to Planning)
 
-**Enabled Self-X Capabilities**:
+**Functionalities:**  
+- Classify system states as normal or anomalous  
+- Detect performance degradation, faults, or policy violations  
+- Compare observed behaviors to internal expectations or past baselines  
+- Feed structured context to Planning agents  
+- Store patterns or behaviors for future reuse or knowledge accumulation
+
+**Example Behaviors:**  
+- A classifier detecting memory leaks based on rolling metrics  
+- A threshold-aware agent flagging SLA violations  
+- A summarizer that generates “health snapshots” for planning modules
+
+The Analysis subsystem enables the system to **understand itself** and **reason about its current condition**. While it learns and adapts, it does not decide what to do—that is the responsibility of Planning. It operates continuously and reacts quickly to shifts in behavior.
+
+---
+
+### 4.4 Planning Subsystem
+
+**Role:**  
+The Planning subsystem generates responses to observations and evolving goals. It produces adaptation strategies, instantiates new behaviors, and—in autogenic mode—can invent new goals, policies, or control structures.
+
+**Agent Types:**  
+- **Recursive**  
+- (Optionally supported by **Learning** agents)
+
+**Self-X Capabilities:**  
+- Self-programming  
+- Self-orienting  
+- Self-governance  
+- Self-healing  
+- Self-adaptation  
+- Self-organization (partial)
+
+**Functionalities:**  
+- Compose or revise plans based on input from Analysis  
+- Propose service changes, reconfigurations, or new agent deployments  
+- Simulate outcomes of potential actions (e.g., via digital twins)  
+- Invent or decompose goals in response to shifting intent or context  
+- Generate or modify agent blueprints or policies
+
+**Example Behaviors:**  
+- An agent generating a reconfiguration plan after detecting bottlenecks  
+- A goal translator decomposing “minimize cost” into actionable service constraints  
+- A recursive agent generating a new coordination protocol for a discovered peer
+
+The Planning subsystem serves as the system’s **reasoning core**. It enables closed-loop autonomy and recursive adaptation. It is also the point at which **fallback boundaries** are enforced: if recursive agents are not available, planning is limited to predefined patterns or reactive heuristics.
+
+---
+
+### 4.5 Control Subsystem
+
+**Role:**  
+The Control subsystem enacts changes proposed by Planning. It applies configurations, triggers structural updates, enforces policies, and coordinates the timing and execution of service changes. It ensures that decisions become actions.
+
+**Agent Types:**  
+- **Procedural**  
+- (Optionally **Learning** for adaptive enforcement)
+
+**Self-X Capabilities:**  
+- Self-configuration  
+- Self-governance  
+- Self-healing  
+- Self-preservation  
 - Self-protection
-- Self-governance
-- Self-adaptation
 
-Together, these subsystems **bind the system together**, enabling agents to find, connect to, and collaborate with one another **safely and purposefully**, even as the system evolves.
+**Functionalities:**  
+- Apply configuration changes to Execution agents or services  
+- Enforce service and platform policies (e.g., security, QoS)  
+- Trigger failover or degraded-mode transitions  
+- Activate or deactivate agents and subsystems  
+- Coordinate rollback or compensation plans if actions fail
 
-In the next section, we shift focus to the **platform runtime**—the non-agentic substrate that hosts the agents—and explore how the autogenic system manages and adapts this environment through intent.
+**Example Behaviors:**  
+- An agent reconfiguring a service graph in response to a new plan  
+- A policy enforcer blocking unauthorized access to a protected service  
+- A failover controller initiating a backup routing path after link failure
 
-## 6. Platform Runtime and Self-Hosting Control
-
-An autogenic system cannot function in isolation. It requires a substrate—a platform runtime—that provides basic execution, communication, and persistence capabilities. However, unlike traditional systems where the platform is static or externally managed, this architecture treats the platform as a **controllable environment**, governed by the system itself.
-
-This section defines the role of the platform runtime and the agents responsible for managing it.
-
----
-
-### 6.1 The Platform Runtime
-
-The platform is a **non-agentic layer** that:
-- Hosts and schedules agent execution
-- Provides messaging, routing, and broadcast mechanisms
-- Manages stateful storage and shared memory
-- Exposes external I/O channels (sensors, APIs, actuators)
-- Offers an **intent-based interface** for runtime control
-
-The platform does **not** make decisions, enforce goals, or manage agents. It is **passive**, but **programmable** through declarative intents.
+The Control subsystem translates intention into enforcement. It does not reason or evaluate—it acts. While typically procedural, it can use learning agents to tune timing, thresholds, or reliability strategies.
 
 ---
 
-### 6.2 Platform Self-Management Subsystem
+### 4.6 Self-Management Subsystem
 
-To manage this substrate, the system includes a **dedicated subsystem of agents** tasked with observing, evaluating, and adapting the platform itself. This introduces a **recursive control loop**: the system modifies the conditions of its own existence.
+**Role:**  
+The Self-Management subsystem is responsible for the system’s internal evolution. It oversees the structure, capabilities, and autonomy level of the entire system. This includes modifying control hierarchies, updating internal blueprints, and restructuring the agent fabric as needed.
 
-**Key Functions**:
-- Monitoring platform health (latency, load, resource limits)
-- Reconfiguring execution fabric, storage policies, or messaging layers
-- Migrating agents, scaling resources, or altering platform topology
-- Declaring platform intents to increase survivability or efficiency
+**Agent Types:**  
+- **Recursive**
 
-**Agent Types**:
-- Learning (for runtime modeling and drift detection)
-- Recursive (for reflective adaptation or recovery)
+**Self-X Capabilities:**  
+- Self-reflection  
+- Self-programming  
+- Self-evolving  
+- Self-hosting  
+- Self-adaptation  
+- Self-preservation (structural)
 
-**Enabled Self-X Capabilities**:
-- Self-hosting
-- Self-healing
-- Self-restructuring
-- Self-preservation
+**Functionalities:**  
+- Monitor and evolve the runtime substrate (e.g., rebalancing agents, modifying control topologies)  
+- Instantiate, revise, or retire subsystems and agent clusters  
+- Upgrade internal reasoning mechanisms (e.g., swap out planning strategies)  
+- Modify system-wide control policies or autonomy level boundaries  
+- Govern agent lifecycles beyond simple instantiation
 
-This subsystem closes the loop between control and substrate, enabling the system to **sustain and reshape the foundation it runs on**, without external intervention.
+**Example Behaviors:**  
+- A reflective agent determining that an obsolete analysis module should be retired and replaced  
+- A recursive controller rewriting part of the agent coordination structure  
+- An internal governance agent limiting the scope of recursive behaviors in a safety-critical context
 
----
+The Self-Management subsystem is what makes the system autogenic. It is not merely responsive—it is **structurally self-aware**. It has the authority to reshape the internal system architecture, evolve its own agents, and adjust the complexity of its own control loop.
 
-### 6.3 Dual Control Architecture
-
-The system thus controls two layers:
-- **The external world** (its mission domain)
-- **Its own platform** (execution domain)
-
-This duality is what transforms an autonomous system into an **autogenic system**—a system capable of both **living in** and **maintaining** its own operational universe.
-
-In the next section, we compare this architecture to existing models and highlight its novel contributions.
-
-## 7. Comparative Positioning and Implications
-
-The proposed architecture introduces a set of capabilities and structural constraints that distinguish it from established paradigms in autonomous and autonomic system design. This section compares the autogenic system model to representative frameworks and outlines the practical and theoretical implications of its core principles.
+This subsystem only becomes active once the system has recursive capabilities. In fallback mode, its behavior is dormant or delegated to predefined routines.
 
 ---
 
-### 7.1 Comparison to Existing Frameworks
+### 4.7 Peering Subsystem
 
-| Framework / Model          | Comparison Summary |
-|----------------------------|--------------------|
-| **TM Forum Autonomous Networks (AN)** | AN defines levels of autonomy with increasing self-X capability, but retains centralized control structures, external policy managers, and orchestration tiers. This architecture eliminates those layers entirely, replacing them with agent clusters and internal goal generation. |
-| **ETSI ENI (Experiential Networked Intelligence)** | ENI introduces AI-based adaptation loops but relies on policy feeds and external evaluation. In contrast, autogenic systems internalize evaluation (via critics) and generation (via factories), operating without external policies. |
-| **Kubernetes / MAPE-K** | Kubernetes is autonomic, but not self-reflective or self-generative. It requires declarative input from human operators. MAPE-K (Monitor, Analyze, Plan, Execute, Knowledge) provides a useful control loop abstraction but does not define agentic implementations or recursive self-hosting. |
-| **Cognitive Architectures (e.g., SOAR, ACT-R)** | These define internal reflective loops but are designed for cognitive modeling, not runtime infrastructure control. The autogenic model generalizes this concept into infrastructure-wide, goal-directed feedback control. |
+**Role:**  
+The Peering subsystem enables the autogenic system to interact with external systems, services, or peers—especially those with their own degrees of autonomy. It supports discovery, classification, negotiation, and coordination across system boundaries.
 
----
+**Agent Types:**  
+- **Recursive**  
+- (Optionally **Learning** for partner modeling)
 
-### 7.2 Implications of an Agent-Only, Minimally Typed Architecture
+**Self-X Capabilities:**  
+- Self-organization  
+- Self-orienting  
+- Self-learning (external context)
 
-- **No humans in the loop**: The system does not rely on external configuration, oversight, or approval. There are no assisted agents.
-- **No static orchestration**: Control flow emerges from agent interactions and intent. There is no central orchestrator or plan executor.
-- **Dynamic system composition**: Agents discover and cluster at runtime via declarative discovery and communication policy.
-- **Recursive autonomy**: The system controls both its external environment and the infrastructure that enables its operation.
-- **Bounded agent complexity**: Agent type is scoped to function. Complexity escalates only when necessary, avoiding over-design or runaway meta-loops.
-- **Modular evolution**: Subsystems are composable, substitutable, and can evolve independently.
+**Functionalities:**  
+- Discover neighboring systems and classify their autonomy level (e.g., automated, autonomic, adaptive)  
+- Negotiate service agreements, shared goals, or policies  
+- Adapt system behavior based on partner capabilities and constraints  
+- Synchronize or delegate functions across multiple systems  
+- Participate in federated decision-making or emergent coalition behaviors
 
----
+**Example Behaviors:**  
+- A recursive agent coordinating traffic handoff with an adaptive neighbor system  
+- A negotiation agent revising service goals to align with an external policy framework  
+- A learning agent adjusting its interaction strategy based on peer behavior over time
 
-### 7.3 Conceptual Shift
-
-This architecture defines a **lower bound** for fully autonomous, self-evolving systems. By reducing control complexity to composable, typed agents and elevating platform control to a first-class recursive loop, it offers a **simpler, safer, and more explainable alternative** to layered orchestration or hardwired intelligence.
-
-In the next section, we outline open research questions and future directions for realizing and validating this architectural model in real-world systems.
-
-## 8. Open Questions and Future Directions
-
-While the proposed architecture defines a clear and minimal structure for autogenic systems, several theoretical and practical challenges remain. These open questions highlight opportunities for future research, prototyping, and validation.
+The Peering subsystem enables the system to function as part of a **larger distributed ecosystem**. It supports not only interoperability but **inter-autonomy**—dynamic relationships where systems influence and adapt to one another. Recursive agents are critical here, especially when goals are not static and must be harmonized on the fly.
 
 ---
 
-### 8.1 When Should Agent Complexity Escalate?
+## 5. Agent Lifecycle and Bootstrapping
 
-A central tenet of this architecture is using the **simplest agent type required**. But what triggers an escalation from procedural to learning, or from learning to recursive?
-- Can escalation thresholds be formalized?
-- What metrics define insufficient behavior (e.g., adaptability failure, novel goal emergence)?
-- Can agent complexity itself be learned or predicted?
+Autogenic systems are built entirely from agents, but these agents themselves must be created, managed, and eventually retired. The system includes an implicit lifecycle framework for its own agents—one that is minimal at first, but evolves in complexity as the system matures.
 
 ---
 
-### 8.2 How Should Recursive Agents Be Constrained?
+### 5.1 Bootstrapping from Procedural Agents
 
-Recursive agents can generate or replace other agents, including themselves. Without constraints, this may lead to:
-- Runaway generation loops
-- Loss of explainability
-- Resource exhaustion
+The system begins with a **minimum viable set of agents**, typically procedural, that implement:
+- Basic monitoring and telemetry  
+- Fixed control responses to known states  
+- Predefined service functions  
+- Autonomic self-management routines (e.g., reboots, restarts, policy enforcement)
 
-Future work must define **guardrails for reflective behavior**, such as:
-- Limiting code generation scope
-- Requiring evaluation via critics before execution
-- Separating generation from deployment privileges
+This bootstrapping set is sufficient to operate the system in **fallback mode**, which guarantees safe, stable behavior with no recursive reasoning or goal invention.
 
 ---
 
-### 8.3 How Can the System Be Observed or Debugged?
+### 5.2 First Learning and Recursive Agents
 
-A system with no human operators still needs to be interpretable and diagnosable. Open questions include:
-- What interfaces allow passive inspection without intervention?
-- Can reflective agents explain their decisions to external observers?
-- How can digital twins be used to safely inspect alternative outcomes?
+Once operational, the system may begin to instantiate more advanced agents:
+- **Learning agents** are introduced into the Analysis, Control, or Peering subsystems to enhance pattern detection and adaptive behavior.
+- The **first recursive agent** may be:
+  - Instantiated from a shipped blueprint (e.g., meta-control logic), or
+  - Synthesized dynamically using a generative engine (e.g., a small embedded LLM)
 
----
-
-### 8.4 How Does Subsystem Evolution Impact Stability?
-
-If each subsystem can evolve independently:
-- How are inter-subsystem contracts maintained?
-- Can discovery and communication policy isolate or sandbox experimental behavior?
-- Is there a stable “core” that must remain fixed for continuity?
-
-These questions are especially important in long-lived or mission-critical autogenic systems.
+This recursive agent becomes the **seed for autogenic behavior**—capable of modifying goals, planning logic, and spawning further agents.
 
 ---
 
-### 8.5 Can This Architecture Be Federated?
+### 5.3 Agent Evolution and Retirement
 
-The current model assumes a single autogenic system. In real-world deployments:
-- Can multiple autogenic systems coordinate, compete, or negotiate?
-- How are authority, trust, and intent shared across systems?
-- What happens when one system modifies the runtime of another?
+Over time, agents may be:
+- **Replaced** if their logic becomes obsolete  
+- **Specialized** to serve new subsystems or goals  
+- **Decommissioned** if their functionality is no longer needed  
+- **Upgraded** into composite structures (e.g., a procedural agent becomes part of a learning cluster)
 
----
+The Self-Management subsystem governs these lifecycle transitions. It may track:
+- Agent performance histories  
+- Resource cost vs. utility  
+- Emergent redundancies or architectural inefficiencies
 
-### 8.6 Validation in Real-World Domains
-
-To validate the architecture, future work should prototype autogenic systems in:
-- Self-managing networks (e.g., L5+ TMF AN use cases)
-- Adaptive cloud fabrics (e.g., recursive deployment via intent)
-- Robotic fleets (e.g., self-inventing logistics agents)
-- Smart factories (e.g., zero-touch digital twin planning)
-
-Each deployment domain raises specific modeling, performance, and safety challenges.
+In fully autogenic systems, even **agent generation policies themselves** may evolve.
 
 ---
 
-These open areas suggest that while the architectural foundation is sound, much work remains to **implement, constrain, and verify** autogenic systems under real-world complexity.
+### 5.4 Fallback and Recovery
 
-## 9. Conclusion
+If a recursive agent fails or is disabled, the system:
+- Reverts to a **fallback mode** with fixed plans and reactive behavior  
+- Suspends structural changes or goal invention  
+- Maintains safe and consistent service delivery
 
-This research note presents a minimal yet complete architecture for **autogenic systems**—systems capable of controlling both their external environment and the infrastructure on which they depend, without human intervention or orchestration. Built entirely from agents, each subsystem is implemented using only the simplest agent types required: procedural, learning, or recursive.
+This lifecycle structure ensures that the system can evolve while remaining stable, traceable, and restartable under adverse conditions.
 
-The architecture defines twelve functional subsystems, including dedicated layers for agent discovery, communication control, self-hosting, and self-programming. It introduces an explicit separation between the **control system** (the agent clusters) and the **platform runtime** (the passive substrate), while ensuring that the control system can adapt and reconfigure the runtime itself.
+## 6. System-of-Systems Role and Interfaces
 
-Unlike existing frameworks in network automation, cloud orchestration, or cognitive modeling, this architecture removes all privileged control logic and external policy dependencies. What remains is a clean, recursive structure in which control, adaptation, and evolution emerge from interaction among agents—guided by intent, constrained by policy, and observable through self-reflective loops.
-
-This architecture is not simply a proposal for software design. It is a conceptual foundation for **truly self-sustaining, self-evolving infrastructures**. By lowering the minimum requirements for autonomy, and organizing complexity into modular, agent-based clusters, the autogenic system offers a powerful alternative to conventional automation: one that can invent, evaluate, and adapt itself—alongside the systems it manages.
-
-Future work will focus on implementation models, domain-specific deployments, and safeguards for recursive autonomy. But the architectural core is established: **a minimal, agent-only system that governs both its function and its foundation**.
-
-## Appendix A: Subsystem Categories by Functional Role
-
-To simplify understanding and modular design, the twelve subsystems of the autogenic architecture can be grouped by their **functional role** in the system's operation:
-
-### A. Core Intelligence
-Subsystems responsible for generating, interpreting, and evaluating goals and behavior.
-
-- **Intent and Goal Management**
-- **Agent Factory**
-- **Critic and Meta-Control**
-
-🧠 *Responsible for reflection, reasoning, and adaptation.*
+Autogenic systems do not operate in isolation. They are designed to function within **system-of-systems (SoS) environments**, where individual systems vary widely in autonomy, complexity, and purpose. This section outlines the role of the autogenic system as both a service provider and a reflective peer.
 
 ---
 
-### B. Execution and Control
-Subsystems that directly engage with the external world and carry out operational behavior.
+### 6.1 Interacting with Other Systems
 
-- **Execution and Control**
-- **Real-World Interface**
-- **Monitoring and Observability**
+The autogenic system exposes services to external clients, which may include:
+- **Automated systems** requiring predictable service execution
+- **Autonomic systems** seeking adaptive coordination or metrics
+- **Adaptive systems** requesting behavior synthesis or policy alignment
+- **Other autogenic systems** negotiating goals, sharing intelligence, or forming coalitions
 
-⚙️ *Responsible for action, observation, and enforcement.*
-
----
-
-### C. Infrastructure Self-Management
-Subsystems that maintain, reconfigure, and protect the system’s own operational substrate.
-
-- **Platform Self-Management**
-- **Agent Lifecycle Management**
-- **Communication Policy Subsystem**
-
-🔧 *Responsible for continuity, integrity, and survivability.*
+The system distinguishes peers via the **Peering subsystem**, which classifies capabilities and determines interaction strategies based on the peer’s autonomy level.
 
 ---
 
-### D. Composition and Context
-Subsystems that enable coordination, memory, and simulated evaluation of system behavior.
+### 6.2 Service Interface Model
 
-- **Discovery Subsystem**
-- **Knowledge and Experience Base**
-- **Digital Twin Simulation**
+The Execution subsystem provides services via an **intent-based interface**, which allows clients to:
+- Express desired outcomes (e.g., “minimize delay” or “optimize energy”)
+- Query system capabilities and status
+- Negotiate constraints or coordination terms
 
-📚 *Responsible for coherence, learning, and safe experimentation.*
-## Appendix B: Subsystem Mapping by Cognitive Focus (Exclusive Assignment)
-
-Each subsystem in the autogenic architecture is aligned to **exactly one** of the nine cognitive focus areas, based on its dominant function. This ensures clear reasoning about responsibility, self-X capabilities, and evolutionary scope.
-
-Supporting subsystems are **nested under their closest cognitive focus area** to preserve architectural coherence without ambiguity.
-
-| **Cognitive Focus** | **Assigned Subsystem(s)**                                  | **Primary Role**                                          |
-|---------------------|-------------------------------------------------------------|-----------------------------------------------------------|
-| **Execution**       | Execution and Control                                       | Drives operational behavior in the real-world system      |
-|                     | Real-World Interface *(nested)*                             | Interfaces with external sensors, APIs, and actuators     |
-| **Awareness**       | Monitoring and Observability                                | Collects telemetry and system state                       |
-|                     | Discovery Subsystem *(nested)*                              | Enables agent registration, lookup, and clustering        |
-| **Analysis**        | Digital Twin Simulation                                     | Simulates and evaluates agent behavior before deployment  |
-| **Decision**        | Critic and Meta-Control                                     | Enforces alignment, correctness, and evaluation loops     |
-|                     | Communication Policy Subsystem *(nested)*                  | Controls communication permissions and trust zones        |
-| **Intent**          | Intent and Goal Management                                  | Decomposes and generates goals from high-level intent     |
-| **Experience**      | Knowledge and Experience Base                               | Accumulates memory, histories, and learned models         |
-| **Evolution**       | Platform Self-Management                                    | Adapts, restructures, and protects the execution substrate|
-| **Invention**       | Agent Factory                                               | Synthesizes new agents and behaviors                      |
-| **Reflection**      | Agent Lifecycle Management                                  | Oversees agent health, transitions, and retirement        |
-
-
-## Appendix C: Comparative Analysis of Reference Architectures
-
-This appendix contrasts the proposed Autogenic System Architecture with two prominent reference models in autonomous system design: the **ITU-T Autonomous Networks (AN) Framework** and the **ETSI ENI 051 Agent-Based Architecture**. The comparison highlights architectural choices, control models, intent handling, cognition representation, and the role of autonomy.
+The Planning and Control subsystems translate intents into executable plans and enforce them via Execution.
 
 ---
 
-### C.1 Comparison with ITU-T Autonomous Networks (AN) Framework
+### 6.3 Digital Twin as Interface Layer
 
-| **Dimension**                  | **Autogenic System Architecture**                             | **ITU-T AN Framework**                                      |
-|-------------------------------|-----------------------------------------------------------------|-------------------------------------------------------------|
-| **Architectural Core**        | Agents as universal primitives (typed: procedural to recursive)| Functional domains (Intent, Knowledge, Management, etc.)     |
-| **Control Loops**             | Distributed agent clusters with reflective feedback            | Hierarchical, multi-domain closed control loops             |
-| **Intent Processing**         | Intent is parsed, invented, and decomposed by recursive agents | Handled in Intent Domain and mapped to services via policies|
-| **Lifecycle Management**      | Agent Lifecycle Subsystem (self-driven creation & retirement)  | External lifecycle orchestration and exposure               |
-| **Self-X Scope**              | Emerges from typed agents across all subsystems                | Modeled across AN Levels (L0–L5), defined as system features |
-| **Runtime Infrastructure**    | Explicitly self-managed by Platform Self-Management agents     | Implicit; infrastructure assumed to be external             |
-| **Cognition Representation**  | Subsystems aligned to cognitive functions (e.g. Decision, Evolution)| Not formally modeled; inferred via functional domains   |
-| **Digital Twin Role**         | Built-in agent-based simulation and feedback loop              | Mentioned as sandbox capability; not architecturally bound  |
-| **Communication Governance**  | Dedicated Communication Policy Subsystem                       | Enforced through management domain, not first-class element |
-| **Autonomy Levels**           | Emerges from capability distribution in agent types            | Defined explicitly by TMF AN Level classification           |
-| **Human Involvement**         | None; no assisted agents or external supervision               | Required at L0–L2; optional at L3–L5                         |
-| **Orchestration / Policies**  | Eliminated; replaced by recursive goal-based reasoning         | Central orchestration and policy enforcement modules        |
+A key feature of the system is a **Digital Twin environment**, embedded in the Planning and Self-Management subsystems. It acts as a sandbox for:
+- Simulating proposed plans before execution
+- Modeling environmental dynamics or external system behavior
+- Safely testing evolved control strategies
+
+The digital twin is implemented using agents that mirror and predict the behavior of both internal and external components. These agents may also be used to test recursive logic before deployment.
 
 ---
 
-### C.2 Comparison with ETSI ENI 051 (Agent-Based Architecture)
+### 6.4 Internal vs. External Self-Management
 
-| **Dimension**                  | **Autogenic System Architecture**                             | **ETSI ENI 051**                                            |
-|-------------------------------|-----------------------------------------------------------------|-------------------------------------------------------------|
-| **System Units**              | Typed agents organized by cognitive function                   | Modular function blocks (Inference, Knowledge, Evaluation)  |
-| **Cognition Model**           | Subsystem-aligned cognitive focus (Intent, Reflection, etc.)   | Inference-based cycle (Collect, Analyze, Reason, Act)       |
-| **Agent Framework**           | Agents perform end-to-end behavior generation and evaluation    | Agents are optional; focus is on internal ENI functions     |
-| **Learning & Inference**      | Learning agents are first-class, tied to experience and evolution| Machine Learning is one component within Reasoning block    |
-| **Policy Handling**           | Replaced by generative intent-based agents                     | Driven by policy input and external context                 |
-| **Intent Model**              | Invented internally; not only interpreted                      | Consumed and processed within ENI modules                   |
-| **Feedback Control**          | Continuous self-modeling via reflection and digital twin agents| Fixed loop: Evaluate → Learn → Update                        |
-| **Lifecycle / Reconfiguration**| Runtime reconfiguration is autonomous and recursive            | Requires operator or external triggers                      |
-| **Discovery & Composition**   | Agent discovery and runtime composition via intent             | Not explicitly addressed                                    |
-| **Platform Awareness**        | System manages and evolves the substrate it depends on         | Infrastructure abstracted away                             |
-| **Scope of Autonomy**         | Unbounded—can recursively adapt and restructure itself         | Bounded to inference-based adaptation                       |
+The autogenic system manages:
+- **The environment-facing Execution layer**, to fulfill service goals
+- **Itself**, including its substrate, agents, and policies
 
----
+These two control surfaces may be interdependent. The system can:
+- Learn how to manage the services it provides
+- Simultaneously learn how to manage its own reasoning architecture
 
-These comparisons illustrate how the Autogenic Architecture diverges from current frameworks by:
-- **Replacing external orchestration and policy layers** with internal goal interpretation and generation
-- **Elevating runtime and platform control** to a reflective cognitive layer
-- **Generalizing cognition across all system functions**, not restricting it to a reasoning module
+This recursive layering supports not only closed-loop adaptation, but **meta-level evolution**, enabling the system to serve others while continuously evolving itself.
 
-This makes the autogenic model uniquely suited for systems that must operate with no external controller, plan their own behavior, and evolve autonomously over time.
+## 7. Comparison with Reference Architectures
 
-## Appendix D: Fallback Modes and Recursive Agent Impact in Autogenic Systems
-
-### Definition
-
-**Fallback modes** are operational states adopted when recursive agents are unavailable or disabled, limiting the system to procedural and learning agents. This ensures safe, predictable operation by gracefully degrading capabilities.
+The autogenic system architecture aligns with, but also extends, existing industry frameworks for autonomous systems. This section compares the proposed model to the most relevant standards: **TM Forum IG1251/1252** and **ETSI ENI 051**.
 
 ---
 
-### Subsystem Capabilities: With vs. Without Recursive Agents (Fallback Profile)
+### 7.1 TM Forum IG1251: Autonomous Networks Reference Architecture
 
-| Subsystem                     | With Recursive Agents                          | Without Recursive Agents (Fallback Mode)                   |
-|-------------------------------|-----------------------------------------------|------------------------------------------------------------|
-| **Intent and Goal Management** | Invents and adapts goals dynamically           | Can only interpret and decompose predefined goals           |
-| **Agent Lifecycle Management** | Self-reflective, adaptive lifecycle control    | Fixed lifecycle policies, no self-reflection                |
-| **Agent Factory**              | Dynamically generates and evolves agents       | Limited to static blueprint-based agent creation            |
-| **Digital Twin Simulation**    | Adaptive scenario invention and evaluation     | Simulation limited to predefined scenarios                   |
-| **Critic and Meta-Control**    | Deep system reflection and adaptive control    | Basic performance checks and reactive corrections only      |
-| **Monitoring and Observability** | Procedural monitoring (unchanged)             | Procedural monitoring (unchanged)                            |
-| **Knowledge and Experience Base** | Supports meta-learning and knowledge evolution | Stores and retrieves static or incremental data only         |
-| **Execution and Control**      | Adaptive execution with possible self-modification | Fixed or learning-based control, no self-programming        |
-| **Real-World Interface**       | Procedural interface (unchanged)                | Procedural interface (unchanged)                             |
-| **Platform Self-Management**   | Restructures and evolves platform runtime      | Limited to monitoring and parameter tuning                   |
-| **Discovery Subsystem**        | Evolves discovery strategies                    | Static registry and lookup                                   |
-| **Communication Policy Subsystem** | Adaptive, dynamic policy enforcement           | Static or manually updated policies                           |
+TMF IG1251 defines a layered controller architecture consisting of roles such as:
+- **Intent Handler**
+- **Service and Domain Orchestration Controllers**
+- **Service and Domain Control Loop Controllers**
+- **Network Function Controllers**
 
----
+These map closely to elements of the autogenic system, but with key differences:
 
-### Implications
+| IG1251 Controller Role              | Autogenic Mapping               | Difference |
+|------------------------------------|----------------------------------|------------|
+| Intent Handler                     | **Planning / Peering** (Recursive Agent) | Autogenic system adds goal invention and reflection |
+| Service Orchestration Controller   | **Control** (Learning Agent)     | Autogenic system localizes enforcement and minimizes orchestration |
+| Domain Control Loop Controller     | **Monitoring / Analysis / Control** | Similar in function, but implemented with agents |
+| Network Function Controller        | **Execution** (Procedural Agent) | Direct alignment |
 
-- The fallback mode restricts the system to **autonomic and adaptive behaviors**, removing true recursive autonomy.
-- Critical reflective, inventive, and evolutionary capabilities become **offline or disabled**.
-- The system remains operational, safe, and controllable but **cannot innovate or self-restructure**.
-- Fallback mode serves as a **safety net**, enabling gradual or conditional escalation to full autogenic operation.
+> **Key Extension**: The autogenic system introduces **recursive agents** and an explicit **Self-Management** subsystem, which are not present in IG1251.
 
 ---
 
-Would you like to include a state machine or flow diagram illustrating transitions between full autogenic and fallback modes?
+### 7.2 ETSI ENI 051: Experiential Network Intelligence
+
+ETSI ENI defines an AI-based closed-loop model including:
+- Knowledge base
+- Policy engine
+- Analysis and inference
+- Decision making
+- Action enforcement
+
+These components correspond to the **MAPE loop** in the autogenic system, particularly:
+- **Analysis Subsystem** ← ENI Inference Engine  
+- **Planning Subsystem** ← ENI Decision Engine  
+- **Control Subsystem** ← ENI Action Interface  
+- **Self-Management Subsystem** ← No equivalent in ENI
+
+> **Key Extension**: The autogenic system integrates recursive reasoning, goal generation, and agent lifecycle evolution—capabilities not supported by the ENI model.
+
+---
+
+### 7.3 Summary of Extensions
+
+The autogenic system introduces the following architectural advances over existing frameworks:
+- **Recursive agents** capable of reflection and structural evolution
+- **Agent factory logic** embedded in planning and self-management
+- **Fallback modes** allowing operation in constrained environments
+- **Digital twin integration** for reasoning, simulation, and testing
+- **Explicit peering subsystem** for multi-system coordination and self-organization
+
+These extensions aim to elevate the system from adaptive to autogenic, enabling it to invent, restructure, and evolve over time while participating in complex distributed ecosystems.
+
+## 8. Limitations and Fallback Modes
+
+While the autogenic architecture is designed to support evolving, self-reflective behavior, it is also constrained by practical considerations. This section outlines system limitations and the fallback modes that ensure continued operation when full autogenic capability is unavailable.
+
+---
+
+### 8.1 When Recursive Agents Are Absent
+
+Recursive agents are responsible for:
+- Goal invention and decomposition
+- Agent generation and evolution
+- Structural reflection and planning refinement
+
+In scenarios where these agents are:
+- Deliberately excluded (e.g. safety-critical deployments)
+- Failed or disabled (e.g. crash or sandboxing policy)
+- Not yet synthesized (e.g. early bootstrapping)
+
+The system enters a **fallback mode** that limits or disables:
+- Dynamic goal revision  
+- System-wide structural change  
+- Agent self-programming or blueprint generation
+
+---
+
+### 8.2 Subsystem Fallback Capabilities
+
+| Subsystem         | Without Recursive Agents                  | Resulting Limitation                         |
+|-------------------|-------------------------------------------|----------------------------------------------|
+| Execution          | Procedural-only logic                    | No adaptive tuning or configuration invention |
+| Monitoring         | Fully functional                         | No limitations                               |
+| Analysis           | Learning-based assessment only           | No goal alignment or narrative synthesis     |
+| Planning           | No goal invention, uses static templates | Plans are fixed or externally supplied       |
+| Control            | Fully functional                         | Limited policy-driven enforcement            |
+| Self-Management    | Inactive or passive                      | No system restructuring or agent evolution   |
+| Peering            | Simple classification, no negotiation    | No inter-autonomy adaptation                 |
+
+---
+
+### 8.3 Deployment-Driven Constraint Scenarios
+
+The fallback mode is especially useful in:
+- **Embedded systems** with strict runtime constraints  
+- **Regulated domains** (e.g., aviation, medical) where goal invention is not permitted  
+- **Phased autonomy deployments**, where systems evolve over time from static → adaptive → autogenic
+
+Fallback is not a failure mode—it is an intentional, composable operating mode. The system is designed to degrade **gracefully**, never attempting capabilities it cannot support under current constraints.
+
+---
+
+### 8.4 Design Implication
+
+Every subsystem in the autogenic architecture can operate in the absence of recursive agents. The system does not require full reflection to function, but instead grows into it. This makes the architecture **future-compatible** while maintaining robustness in the present.
+
+## 9. Future Work
+
+This research note defines a minimal, composable architecture for autogenic systems. While it provides a complete conceptual and functional foundation, several areas remain open for future development, validation, and extension.
+
+---
+
+### 9.1 Validating Recursive Agent Behavior
+
+Recursive agents introduce the potential for system-wide restructuring, goal invention, and meta-reasoning. Future work is needed to:
+- Define safe execution constraints and containment mechanisms  
+- Validate recursive agent behavior using formal methods or sandbox simulation  
+- Explore approaches for recursive agent self-verification and rollback
+
+---
+
+### 9.2 Agent Factory Design Patterns
+
+While agent generation is supported in principle, further work is needed to:
+- Define modular agent factory blueprints  
+- Support multi-agent composition and specialization  
+- Automate lifecycle transitions from procedural → learning → recursive agents
+
+This includes integrating generative engines, such as embedded language models or symbolic planners, into the self-management layer.
+
+---
+
+### 9.3 Distributed Recursive Coordination
+
+The Peering subsystem introduces the challenge of multi-agent, multi-system recursive reasoning. Open areas include:
+- Consensus and negotiation across autonomous systems  
+- Cooperative or adversarial goal alignment  
+- Secure propagation of recursive agent logic between systems
+
+---
+
+### 9.4 Runtime Governance and Guardrails
+
+As systems evolve their own logic, mechanisms for runtime governance become critical:
+- Runtime traceability and auditability of self-generated behavior  
+- Containment domains for recursive experimentation  
+- Ethical constraints or safety policies integrated into planning
+
+This is particularly relevant in domains where autonomy must be constrained by human oversight or mission assurance.
+
+---
+
+### 9.5 Application Domains and Implementations
+
+Initial prototypes may target domains such as:
+- Edge intelligence for autonomous vehicles or fleets  
+- Self-optimizing communication networks  
+- Adaptive mission software in space or defense  
+- Reflexive controllers in smart manufacturing
+
+Implementations may build on service meshes, container fabrics, or event-driven runtimes that already support partial agent-like behavior.
+
+---
+
+### 9.6 Long-Term Vision: Autogenic Ecosystems
+
+The architecture supports recursive behavior in a single system, but may eventually extend to **ecosystems of autogenic systems** that:
+- Evolve coordination protocols  
+- Share recursive agent blueprints  
+- Form reflective federations for global goals
+
+This raises questions of collective self-programming, distributed self-reflection, and meta-level policy evolution—all promising directions for autogenic intelligence at scale.
+
+# 📎 Appendices
+
+---
+
+## Appendix A. Fallback Modes and Recursive Agent Impact
+
+This appendix captures the behavior of each subsystem when recursive agents are not available and defines the operational limitations of the system in fallback mode.
+
+| Subsystem         | Recursive Agent Role                 | Fallback Mode Behavior                          |
+|-------------------|--------------------------------------|--------------------------------------------------|
+| Execution         | None                                 | Fully functional (procedural logic only)         |
+| Monitoring        | None                                 | Fully functional                                 |
+| Analysis          | Enhances multi-factor assessment     | Limited to static or learning-based evaluation   |
+| Planning          | Enables goal invention, blueprinting | Falls back to fixed templates or pre-authored plans |
+| Control           | Optional tuning via reflection       | Executes plans, no meta-policy adjustments       |
+| Self-Management   | Governs agent evolution              | Disabled; system cannot restructure itself       |
+| Peering           | Enables inter-autonomy negotiation   | Classifies peers but does not adapt dynamically  |
+
+---
+
+## Appendix B. Architectural Comparison with TMF and ETSI Standards
+
+| Feature / Role                          | TMF IG1251             | ETSI ENI 051         | Autogenic System                          |
+|-----------------------------------------|------------------------|----------------------|-------------------------------------------|
+| Intent Interpretation                   | Intent Handler         | Policy Input         | Recursive Planning & Peering              |
+| Closed-Loop Automation                  | Domain/Service Loops   | Analysis + Decision  | Monitoring → Analysis → Planning → Control|
+| Goal Invention                          | ❌                     | ❌                   | ✔️ Planning + Recursive Agents             |
+| Agent-Based Implementation              | ❌                     | Partial (AI Modules) | ✔️ Fully agent-based, typed by capability |
+| Agent Factory / Self-Programming        | ❌                     | ❌                   | ✔️ Self-Management                         |
+| Digital Twin for Reasoning              | ❌                     | ❌                   | ✔️ Used in Planning & Reflection          |
+| Fallback Modes                          | ❌                     | ❌                   | ✔️ Explicit and Composable                |
+| Self-Hosting                            | ❌                     | ❌                   | ✔️ Recursive Self-Management              |
+
+---
+## Appendix C. Agent Types and Functionalities by Subsystem
+
+This appendix summarizes the type of agents used in each subsystem and their primary functional roles. It reflects the design principle that each subsystem should use the **lowest-level agents required** to perform its function.
+
+| **Subsystem**     | **Agent Types Used**          | **Primary Functionalities**                                            |
+|-------------------|-------------------------------|------------------------------------------------------------------------|
+| **Execution**      | Procedural (default), optional Learning | Execute service logic, maintain system output, implement fixed behaviors |
+| **Monitoring**     | Procedural                    | Collect telemetry, expose metadata, emit metrics and logs              |
+| **Analysis**       | Learning                      | Detect anomalies, classify behavior, evaluate system state             |
+| **Planning**       | Recursive, optional Learning  | Generate adaptation plans, invent goals, simulate outcomes             |
+| **Control**        | Procedural, optional Learning | Enforce plans, apply changes, enforce policies                         |
+| **Self-Management**| Recursive                     | Evolve agents, restructure system, modify control logic                |
+| **Peering**        | Recursive, optional Learning  | Negotiate with external systems, align goals, coordinate behavior      |
+
+---
+
+This table complements the Self-X mapping and lifecycle descriptions by showing which kind of cognitive complexity is required per subsystem. It reinforces the system's ability to operate incrementally and remain grounded in fallback configurations.
+
+## Appendix D. Metadata Mapping by Subsystem
+
+Each subsystem consumes and/or produces specific types of metadata. This appendix maps the metadata categories to the seven core subsystems, based on their functional role.
+
+| **Subsystem**     | **Primary Metadata Consumed**       | **Metadata Produced**                      |
+|-------------------|-------------------------------------|--------------------------------------------|
+| **Execution**      | Configuration Metadata              | Runtime Data (Logs, Events, Metrics)        |
+| **Monitoring**     | Observability Metadata              | Raw Telemetry, State Snapshots              |
+| **Analysis**       | Observability, Behavioral Metadata  | Assessment Results, Anomaly Reports         |
+| **Planning**       | Goals, Policies, Knowledge Metadata | Adaptation Plans, Proposed Goals            |
+| **Control**        | Plans, Policy Metadata              | Actuation Records, Change Logs              |
+| **Self-Management**| Structural, Control, Platform Metadata | Updated Blueprints, Agent Lifecycle Logs |
+| **Peering**        | Partner Metadata, Contract Templates | Coordination Proposals, Negotiation Logs    |
+
+> Note: Recursive agents are responsible for generating or evolving **goal**, **blueprint**, and **control logic metadata** within Planning and Self-Management.
+
+---
+
+## Appendix E. Glossary of Terms
+
+| **Term**             | **Definition**                                                                 |
+|----------------------|--------------------------------------------------------------------------------|
+| **Agent**             | An encapsulated, autonomous entity that performs a specific system function    |
+| **Procedural Agent**  | Executes fixed logic; non-adaptive                                             |
+| **Learning Agent**    | Learns from data or feedback to tune behavior                                  |
+| **Recursive Agent**   | Reflects on goals, agents, or architecture; capable of meta-reasoning          |
+| **Subsystem**         | A functional group of agents responsible for one cognitive focus               |
+| **Self-X Capability** | A category of autonomous system behavior, e.g., self-healing, self-reflection  |
+| **Fallback Mode**     | A constrained operating mode where recursive agents are unavailable             |
+| **Digital Twin**      | A simulated model of the system used for safe testing and reasoning             |
+| **Agent Factory**     | A structure capable of generating or instantiating agents dynamically           |
+| **Blueprint**         | A template for an agent, plan, or subsystem, used by Planning or Management     |
+| **Autogenic System**  | A system capable of recursive goal invention, self-programming, and self-evolution |
 
