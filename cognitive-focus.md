@@ -1,7 +1,7 @@
 # Mapping Self-X Capabilities to Cognitive Focus
 *A Practical Framework for Evaluating Autonomous Network Systems*  
 
-**Author:** Petar Djukic, Ph.D.  
+**Author:** C.G. Djinovic
 **Date:** June 2025  
 
 ## Table of Contents
