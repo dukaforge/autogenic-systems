@@ -1,6 +1,7 @@
-# **Agents as the Architecture: A Functional Taxonomy for Autogenic Systems**
+# Agents as the Architecture: A Functional Taxonomy for Autogenic Systems
 
 **C.G. Djinovic**
+
 ** June 30, 2025**
 
 ---
